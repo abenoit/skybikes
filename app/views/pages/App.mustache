@@ -1,3 +1,16 @@
-{{#people}}
-> {{.}}
-{{/people}}
+<div class="demo-layout-transparent mdl-layout mdl-js-layout">
+  <header class="mdl-layout__header mdl-layout__header--transparent">
+    <div class="mdl-layout__header-row">
+      <span class="mdl-layout-title">Sky Bikes - Bike to the Sky !</span>
+      <div class="mdl-layout-spacer"></div>
+      <nav class="mdl-navigation">
+      <a id="tabCustomer" href="">Customer</a>
+      <a id="tabMember" href="">Member</a>
+      <a id="tabSysAdmin" href="">SysAdmin</a>
+      </nav>
+    </div>
+  </header>
+  <main class="mdl-layout__content">
+    {{> view}}
+  </main>
+</div>

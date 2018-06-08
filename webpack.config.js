@@ -21,11 +21,15 @@ module.exports = {
       },
       {
         test: /\.mustache$/,
-        loader: "mustache-loader"
+        loader: "mustache-loader?noShortcut"
       },
       {
         test: /\.scss$/,
-        use: ["css-loader", "sass-loader"]
+        use: [
+          "style-loader", // creates style nodes from JS strings
+          "css-loader", // translates CSS into CommonJS
+          "sass-loader" // compiles Sass to CSS
+        ]
       }
     ]
   },

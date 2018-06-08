@@ -1,0 +1,22 @@
+.App {
+  .mdl-layout__header {
+    background-color: pink;
+  }
+
+  .demo-layout-transparent .mdl-layout__header,
+  .demo-layout-transparent .mdl-layout__drawer-button {
+    /* This background is dark, so we set text to white. Use 87% black instead if
+       your background is light. */
+    color: white;
+  }
+
+  .mdl-navigation a {
+    text-decoration: none;
+    color: white;
+    margin: 0 10px;
+  }
+
+  .mdl-layout__content {
+    margin: 0 100px;
+  }
+}
