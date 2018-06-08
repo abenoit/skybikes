@@ -1,9 +1,8 @@
-export default class Storage {
-  save(key, value) {
-    localStorage.setItem(key, value);
-  }
+export const save = (key, value) => {
+  localStorage.setItem(key, JSON.stringify(value));
+};
 
-  getItem(key) {
-    return localStorage.getItem(key);
-  }
-}
+export const getItem = key => {
+  const data = localStorage.getItem(key);
+  return data ? JSON.parse(data) : undefined;
+};

@@ -8,8 +8,10 @@ export const bindOnclick = (selector, cb) => {
 };
 
 export const bindOnSubmit = (formSelector, cb) => {
-  document.querySelector(formSelector).addEventListener("submit", e => {
-    e.preventDefault();
-    cb();
-  });
+  const domElt = document.querySelector(formSelector);
+  domElt &&
+    domElt.addEventListener("submit", e => {
+      e.preventDefault();
+      cb();
+    });
 };

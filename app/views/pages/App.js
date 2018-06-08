@@ -22,10 +22,8 @@ export default class App {
     bindOnSubmit("#registrationForm", this.registerCustomer);
   }
 
-  bindMemberDomElements() {}
-
   bindGoToNewCustomer() {
-    this.render(customerTemplate, this.bindCustomerDomElements);
+    this.render(customerTemplate);
   }
 
   goToMember() {
@@ -50,12 +48,8 @@ export default class App {
     }
   }
 
-  render(
-    view = customerTemplate,
-    partialDomBinder = this.bindCustomerDomElements
-  ) {
+  render(view = customerTemplate) {
     this.app.innerHTML = appTemplate.render({}, { view });
     this.bindDomElements();
-    partialDomBinder && partialDomBinder();
   }
 }
