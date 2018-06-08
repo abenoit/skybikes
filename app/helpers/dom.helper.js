@@ -1,8 +1,10 @@
 export const bindOnclick = (selector, cb) => {
-  document.querySelector(selector).addEventListener("click", e => {
-    e.preventDefault();
-    cb(e);
-  });
+  const domElt = document.querySelector(selector);
+  domElt &&
+    domElt.addEventListener("click", e => {
+      e.preventDefault();
+      cb(e);
+    });
 };
 
 export const bindOnSubmit = (formSelector, cb) => {

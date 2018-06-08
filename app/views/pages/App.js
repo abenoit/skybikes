@@ -6,7 +6,7 @@ import sysAdminTemplate from "../partials/SysAdmin.mustache";
 import { bindOnclick, bindOnSubmit } from "../../helpers/dom.helper";
 
 import "./App.scss";
-import Customer from "../../models/Member";
+import Customer from "../../models/Customer";
 
 export default class App {
   constructor() {
@@ -19,11 +19,13 @@ export default class App {
     bindOnclick("#tabCustomer", this.bindGoToNewCustomer.bind(this));
     bindOnclick("#tabMember", this.goToMember.bind(this));
     bindOnclick("#tabSysAdmin", this.goToSysAdmin.bind(this));
-    bindOnSubmit("#registrationForm", this.registerCustomer.bind(this));
+    bindOnSubmit("#registrationForm", this.registerCustomer);
   }
 
+  bindMemberDomElements() {}
+
   bindGoToNewCustomer() {
-    this.render(customerTemplate);
+    this.render(customerTemplate, this.bindCustomerDomElements);
   }
 
   goToMember() {
@@ -48,8 +50,12 @@ export default class App {
     }
   }
 
-  render(view = customerTemplate) {
+  render(
+    view = customerTemplate,
+    partialDomBinder = this.bindCustomerDomElements
+  ) {
     this.app.innerHTML = appTemplate.render({}, { view });
     this.bindDomElements();
+    partialDomBinder && partialDomBinder();
   }
 }

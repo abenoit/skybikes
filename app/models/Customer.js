@@ -45,4 +45,13 @@ export default class Customer {
       JSON.stringify([...this.savedMembers, memberInformation])
     );
   }
+
+  login(email) {
+    const member = this.savedMembers.find(member => member.email === email);
+    if (!member) {
+      throw new Error("member not found");
+    } else {
+      // TODO : construct member properties
+    }
+  }
 }
