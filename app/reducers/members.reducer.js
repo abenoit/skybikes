@@ -2,8 +2,11 @@ import {
   LOGIN_SUCCESS,
   RENT_BIKE,
   RETURN_BIKE,
-  SIGN_UP
+  SIGN_UP,
+  LOGOUT
 } from "../constants/actionTypes";
+
+import { MAX_TIME_RENTAL_REDUX } from "../constants/application";
 
 const INITIAL_STATE = {
   memberConnected: null,
@@ -23,6 +26,10 @@ export const members = (state = INITIAL_STATE, action) => {
       state.members;
       return { ...state, memberConnected: action.email };
 
+    case LOGOUT:
+      state.members;
+      return { ...state, memberConnected: null };
+
     case SIGN_UP:
       const { firstname, lastname, email, phone } = action;
       const addNewMember = [...state.members];
@@ -37,7 +44,10 @@ export const members = (state = INITIAL_STATE, action) => {
       const member = newStateRent.members.find(
         member => member.email === state.memberConnected
       );
-      member.rentalInfo = { stationId: action.stationId };
+      member.rentalInfo = {
+        stationId: action.stationId,
+        rentalTime: new Date()
+      };
       return newStateRent;
 
     case RETURN_BIKE:
@@ -45,7 +55,16 @@ export const members = (state = INITIAL_STATE, action) => {
       const memberReturning = newStateReturn.members.find(
         member => member.email === state.memberConnected
       );
+      const now = new Date();
+      var timeDiff = Math.abs(
+        now.getTime() - memberReturning.rentalInfo.rentalTime.getTime()
+      );
+      var diffSeconds = Math.ceil(timeDiff / 1000);
+      if (diffSeconds > MAX_TIME_RENTAL_REDUX) {
+        memberReturning.banned = true;
+      }
       memberReturning.rentalInfo = null;
+
       return newStateReturn;
 
       const newBorrowersList = [...state.bikeBorrowers];

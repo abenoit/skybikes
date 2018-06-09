@@ -1,10 +1,12 @@
-<h3>Thank you {{email}} for renting your bike at {{station.location}}</h3>
+<h3>Thank you {{email}} for renting your bike</h3>
 
 <div> Please chose where to return your bike </div>
 
 <div class="mdl-cell mdl-cell--2-col mdl-textfield mdl-js-textfield">
     <button type="button" id="logout" class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect">Logout</button>
 </div>
+
+<div id="timer-countdown">8 seconds remaining to return bike</div>
 
 <div class="stations-cards">
 {{#stations}}

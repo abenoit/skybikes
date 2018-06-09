@@ -1,15 +1,11 @@
-import { getItem, save } from "../helpers/storage.helper";
-
 import {
   STORAGE_MEMBER_LOGGED_KEY,
   STORAGE_MEMBERS_KEY
-} from "../constants/App";
+} from "../constants/application";
 
 export default class Customer {
   constructor(email) {
     this.email = email;
-
-    this.savedMembers = getItem(STORAGE_MEMBERS_KEY) || [];
   }
 
   checkCustomerInformation(firstname, lastname, phone, savedMembers) {

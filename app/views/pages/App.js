@@ -10,6 +10,7 @@ import { rentBike, returnBike } from "../../actions/stations.actions";
 import { login, logout, signup } from "../../actions/members.actions";
 // Models
 import Customer from "../../models/Customer";
+import Station from "../../models/Station";
 // Selectors
 import {
   getAllStations,
@@ -21,9 +22,10 @@ import {
   bindOnSubmit,
   bindOnclickForClass
 } from "../../helpers/dom.helper";
+import { MAX_TIME_RENTAL_FRONT } from "../../constants/application";
+import { isConnectedMemberAlreadyBorrower } from "../../reducers/members.reducer";
 
 import "./App.scss";
-import { isConnectedMemberAlreadyBorrower } from "../../reducers/members.reducer";
 
 export default class App {
   constructor(store) {
@@ -36,7 +38,7 @@ export default class App {
 
   bindDomElements() {
     bindOnclick("#tabCustomer", () => this.render(customerTemplate));
-    bindOnclick("#tabMember", () => this.render(memberTemplate));
+    bindOnclick("#tabMember", this.memberView.bind(this));
     bindOnclick("#tabSysAdmin", this.sysAdminView.bind(this));
     bindOnSubmit("#registrationForm", this.registerCustomer.bind(this));
     bindOnclick("#memberLoginBtn", this.memberLogin.bind(this));
@@ -45,6 +47,15 @@ export default class App {
     bindOnclickForClass(".rent", this.rentBike.bind(this));
 
     bindOnclickForClass(".return", this.returnBike.bind(this));
+  }
+
+  memberView() {
+    const connectedUser = this.store.getState().members.memberConnected;
+    if (connectedUser) {
+      this.displayAppropriateScreenOnceLogged();
+    } else {
+      this.render(memberTemplate);
+    }
   }
 
   sysAdminView() {
@@ -76,6 +87,19 @@ export default class App {
     }
   }
 
+  startTimer(duration, domElt) {
+    let timer = duration;
+    let seconds;
+    const timerId = setInterval(() => {
+      seconds = parseInt(timer % 60, 10);
+      domElt.innerHTML = `${seconds} seconds remaining to return the bike`;
+
+      if (--timer < 0) {
+        clearInterval(timerId);
+      }
+    }, 1000);
+  }
+
   memberLogin() {
     try {
       const email = document.querySelector("#email");
@@ -83,20 +107,25 @@ export default class App {
         this.store.getState().members.members
       );
       this.store.dispatch(login(email.value));
-
-      // Display the correct screen once logged
-      const stations = getAllStations(this.store.getState().stations);
-
-      const template = isConnectedMemberAlreadyBorrower(
-        this.store.getState().members
-      )
-        ? memberBikeRentedTemplate
-        : memberRentalTemplate;
-
-      this.render(template, { email: email.value, stations });
+      this.displayAppropriateScreenOnceLogged();
     } catch (error) {
       alert(error);
     }
+  }
+
+  displayAppropriateScreenOnceLogged() {
+    const stations = getAllStations(this.store.getState().stations);
+
+    const template = isConnectedMemberAlreadyBorrower(
+      this.store.getState().members
+    )
+      ? memberBikeRentedTemplate
+      : memberRentalTemplate;
+
+    this.render(template, {
+      email: this.store.getState().members.memberConnected,
+      stations
+    });
   }
 
   memberLogout() {
@@ -105,36 +134,43 @@ export default class App {
   }
 
   rentBike(evt) {
-    const stationId = evt.target.getAttribute("data-id");
-    const selectedStation = getStationById(
-      this.store.getState().stations,
-      stationId
-    );
+    try {
+      const stationId = evt.target.getAttribute("data-id");
+      const selectedStation = getStationById(
+        this.store.getState().stations,
+        stationId
+      );
+      new Station().checkStationForRentingBike(selectedStation);
+      this.store.dispatch(rentBike(stationId));
 
-    if (selectedStation.bikesAvailable === 0) {
-      alert("No bicycle available here !");
-      return;
+      const stations = getAllStations(this.store.getState().stations);
+      this.render(memberBikeRentedTemplate, {
+        email: this.store.getState().members.memberConnected,
+        stations
+      });
+
+      this.startTimer(
+        MAX_TIME_RENTAL_FRONT,
+        document.querySelector("#timer-countdown")
+      );
+    } catch (e) {
+      alert(e);
     }
-
-    this.store.dispatch(rentBike(stationId));
-
-    const stations = getAllStations(this.store.getState().stations);
-    this.render(memberBikeRentedTemplate, {
-      email: this.store.getState().members.memberConnected,
-      stations
-    });
   }
 
   returnBike(evt) {
     const stationId = evt.target.getAttribute("data-id");
-    const selectedStation = getStationById(
-      this.store.getState().stations,
-      stationId
-    );
-    if (selectedStation.nbFreeSlot === 0) {
-      alert("No free slot here !");
-      return;
+
+    try {
+      const selectedStation = getStationById(
+        this.store.getState().stations,
+        stationId
+      );
+      new Station().checkStationForReturningBike(selectedStation);
+    } catch (e) {
+      alert(e);
     }
+
     this.store.dispatch(returnBike(stationId));
 
     const stations = getAllStations(this.store.getState().stations);
