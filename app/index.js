@@ -1,7 +1,10 @@
 import App from "./views/pages/App";
-import { createStore } from "redux";
-import { rentalReducer } from "./reducers/rental.reducer";
+import { createStore, combineReducers } from "redux";
+import { reducers } from "./reducers";
 
-const store = createStore(rentalReducer);
+const store = createStore(
+  reducers,
+  window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__()
+);
 
 new App(store).render();

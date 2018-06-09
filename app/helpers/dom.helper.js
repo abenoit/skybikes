@@ -7,6 +7,18 @@ export const bindOnclick = (selector, cb) => {
     });
 };
 
+export const bindOnclickForClass = (selector, cb) => {
+  const domElt = document.querySelectorAll(selector);
+  if (domElt) {
+    domElt.forEach(elt => {
+      elt.addEventListener("click", e => {
+        e.preventDefault();
+        cb(e);
+      });
+    });
+  }
+};
+
 export const bindOnSubmit = (formSelector, cb) => {
   const domElt = document.querySelector(formSelector);
   domElt &&

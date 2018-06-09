@@ -19,4 +19,16 @@
   .mdl-layout__content {
     margin: 0 100px;
   }
+
+  .stations-cards {
+    display: flex;
+
+    .mdl-card {
+      margin: 20px 10px;
+    }
+  }
+
+  .mdl-data-table {
+    margin: 0 auto;
+  }
 }

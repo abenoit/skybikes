@@ -1,5 +1,6 @@
-<h3>Hello {{email}}</h3>
-<h3>Chose your bike to Rent !</h3>
+<h3>Thank you {{email}} for renting your bike at {{station.location}}</h3>
+
+<div> Please chose where to return your bike </div>
 
 <div class="mdl-cell mdl-cell--2-col mdl-textfield mdl-js-textfield">
     <button type="button" id="logout" class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect">Logout</button>
@@ -12,11 +13,11 @@
     <h2 class="mdl-card__title-text">{{location}}</h2>
   </div>
   <div class="mdl-card__supporting-text">
-    <span>Bikes Availables : {{bikesAvailable}}</span>
+    <span>Slots free : {{nbFreeSlot}}</span>
   </div>
   <div class="mdl-card__actions mdl-card--border">
-    <a data-id={{id}} class="rent mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect">
-      Rent here
+    <a data-id={{id}} class="return mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect">
+      Return my bike here
     </a>
   </div>
 </div>

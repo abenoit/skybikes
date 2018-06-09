@@ -12,12 +12,12 @@ export default class Customer {
     this.savedMembers = getItem(STORAGE_MEMBERS_KEY) || [];
   }
 
-  checkCustomerInformation() {
-    if (!this.firstname || !this.lastname || !this.email || !this.phone) {
+  checkCustomerInformation(firstname, lastname, phone, savedMembers) {
+    if (!firstname || !lastname || !this.email || !phone) {
       throw new Error("All fields are required.");
     }
 
-    const memberAlreadyExists = this.savedMembers.find(
+    const memberAlreadyExists = savedMembers.find(
       member =>
         member.email.toLowerCase().trim() === this.email.toLowerCase().trim()
     );
@@ -27,24 +27,9 @@ export default class Customer {
     }
   }
 
-  saveCustomer(fname, lname, phone) {
-    this.firstname = fname;
-    this.lastname = lname;
-    this.phone = phone;
-
-    this.checkCustomerInformation();
-
-    const { storage, savedMembers, ...memberInformation } = this;
-    save(STORAGE_MEMBERS_KEY, [...this.savedMembers, memberInformation]);
-  }
-
-  login() {
-    const member = this.savedMembers.find(
-      member => member.email === this.email
-    );
-    if (member) {
-      save(STORAGE_MEMBER_LOGGED_KEY, member);
-    } else {
+  checkLogin(savedMembers) {
+    const member = savedMembers.find(member => member.email === this.email);
+    if (!member) {
       throw new Error("member not found");
     }
   }
