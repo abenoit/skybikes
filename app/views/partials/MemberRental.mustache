@@ -1,0 +1,15 @@
+<h3>Hello {{email}}</h3>
+<h3>Chose your bike to Rent !</h3>
+
+<div class="mdl-cell mdl-cell--2-col mdl-textfield mdl-js-textfield">
+    <button type="button" id="logout" class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect">Logout</button>
+</div>
+
+{{#stations}}
+    <div class="location">{{location}}</div>
+    <div class="bicycle-available">{{bikesAvailable}}</div>
+
+    <div class="mdl-cell mdl-cell--2-col mdl-textfield mdl-js-textfield">
+        <button type="button" id="rent" data-id={{id}} class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect">Rent</button>
+    </div>
+{{/stations}}

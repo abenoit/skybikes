@@ -25,6 +25,7 @@
   },
   "dependencies": {
     "mustache": "^2.3.0",
-    "mustache-loader": "^1.4.0"
+    "mustache-loader": "^1.4.0",
+    "redux": "^4.0.0"
   }
 }

@@ -1,17 +1,15 @@
 import { getItem, save } from "../helpers/storage.helper";
 
-import { STORAGE_MEMBERS_KEY } from "../constants/App";
+import {
+  STORAGE_MEMBER_LOGGED_KEY,
+  STORAGE_MEMBERS_KEY
+} from "../constants/App";
 
 export default class Customer {
-  constructor(fname, lname, email, phone) {
-    this.firstname = fname.value;
-    this.lastname = lname.value;
-    this.email = email.value;
-    this.phone = phone.value;
+  constructor(email) {
+    this.email = email;
 
     this.savedMembers = getItem(STORAGE_MEMBERS_KEY) || [];
-
-    this.checkCustomerInformation();
   }
 
   checkCustomerInformation() {
@@ -29,17 +27,25 @@ export default class Customer {
     }
   }
 
-  saveCustomer() {
+  saveCustomer(fname, lname, phone) {
+    this.firstname = fname;
+    this.lastname = lname;
+    this.phone = phone;
+
+    this.checkCustomerInformation();
+
     const { storage, savedMembers, ...memberInformation } = this;
     save(STORAGE_MEMBERS_KEY, [...this.savedMembers, memberInformation]);
   }
 
-  login(email) {
-    const member = this.savedMembers.find(member => member.email === email);
-    if (!member) {
-      throw new Error("member not found");
+  login() {
+    const member = this.savedMembers.find(
+      member => member.email === this.email
+    );
+    if (member) {
+      save(STORAGE_MEMBER_LOGGED_KEY, member);
     } else {
-      // TODO : construct member properties
+      throw new Error("member not found");
     }
   }
 }
