@@ -1,27 +1,33 @@
-<h3>Thank you {{email}} for renting your bike</h3>
+<div class="Rented">
+  <div class="title-logout">
+    <h3>Thank you {{email}} !</h3>
 
-<div> Please chose where to return your bike </div>
-
-<div class="mdl-cell mdl-cell--2-col mdl-textfield mdl-js-textfield">
-    <button type="button" id="logout" class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect">Logout</button>
-</div>
-
-<div id="timer-countdown">16 seconds remaining to return bike</div>
-
-<div class="stations-cards">
-{{#stations}}
-<div class="demo-card-square mdl-card mdl-shadow--2dp">
-  <div class="mdl-card__title mdl-card--expand">
-    <h2 class="mdl-card__title-text">{{location}}</h2>
+    <div class="mdl-cell mdl-cell--2-col mdl-textfield mdl-js-textfield">
+        <button type="button" id="logout" class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect">Logout</button>
+    </div>
   </div>
-  <div class="mdl-card__supporting-text">
-    <span>Slots free : {{nbFreeSlot}}</span>
+
+  <div class="rental-instructions">
+    <span>Please chose where to return your bike</span> 
+    <div id="timer-countdown" class="timer-countdown">{{remainingTime}} ms remaining to return the bike</div>
   </div>
-  <div class="mdl-card__actions mdl-card--border">
-    <a data-id={{id}} class="return mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect">
-      Return my bike here
-    </a>
+
+
+  <div class="stations-cards">
+  {{#stations}}
+  <div class="demo-card-square mdl-card mdl-shadow--2dp">
+    <div class="mdl-card__title mdl-card--expand">
+      <h2 class="mdl-card__title-text">{{location}}</h2>
+    </div>
+    <div class="mdl-card__supporting-text">
+      <span>Slots free : {{nbFreeSlot}}</span>
+    </div>
+    <div class="mdl-card__actions mdl-card--border">
+      <a data-id={{id}} class="return mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect">
+        Return my bike here
+      </a>
+    </div>
   </div>
-</div>
-{{/stations}}
+  {{/stations}}
+  </div>
 </div>

@@ -1,7 +1,7 @@
 // Templates
 import appTemplate from "./App.mustache";
 import customerTemplate from "../partials/Customer.mustache";
-import memberTemplate from "../partials/Member.mustache";
+import loginTemplate from "../partials/Login.mustache";
 import sysAdminTemplate from "../partials/SysAdmin.mustache";
 import memberRentalTemplate from "../partials/memberRental.mustache";
 import memberBikeRentedTemplate from "../partials/memberBikeRented.mustache";
@@ -39,6 +39,7 @@ import "./App.scss";
 export default class App {
   constructor(store) {
     this.store = store;
+    this.timers = {};
     this.app = document.createElement("div");
     this.app.className = "App";
     document.body.appendChild(this.app);
@@ -61,7 +62,7 @@ export default class App {
     if (this.store.getState().auth.connectedMember) {
       this.displayAppropriateScreenOnceLogged();
     } else {
-      this.render(memberTemplate);
+      this.render(loginTemplate);
     }
   }
 
@@ -98,9 +99,11 @@ export default class App {
   startTimer(duration, domElt, member) {
     var startTime = Date.now();
     const context = this;
+    this.timers[member] = domElt;
 
     const timerId = setInterval(() => {
       var elapsedTime = Date.now() - startTime;
+
       const remainingTime = MAX_TIME_RENTAL - elapsedTime;
       domElt.innerHTML = `${remainingTime} ms remaining to return the bike`;
 
@@ -152,11 +155,15 @@ export default class App {
       email: connectedMember,
       stations
     });
+
+    // Retrieve timer
+    const timer = document.querySelector("#timer-countdown");
+    timer && timer.parentNode.replaceChild(this.timers[connectedMember], timer);
   }
 
   memberLogout() {
     this.store.dispatch(logout());
-    this.render(memberTemplate);
+    this.render(loginTemplate);
   }
 
   rentBike(evt) {

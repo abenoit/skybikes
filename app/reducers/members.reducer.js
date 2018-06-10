@@ -10,9 +10,9 @@ const INITIAL_STATE = {
   byId: {
     "amelie.benoit33@gmail.com": {
       email: "amelie.benoit33@gmail.com",
-      lastname: "BENOIT",
-      firstname: "amelie",
-      phone: "32332423"
+      lastname: "Benoit",
+      firstname: "Amélie",
+      phone: "0607080910"
     }
   },
   allIds: ["amelie.benoit33@gmail.com"]
