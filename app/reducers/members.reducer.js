@@ -3,10 +3,9 @@ import {
   RENT_BIKE,
   RETURN_BIKE,
   SIGN_UP,
-  LOGOUT
+  LOGOUT,
+  LATE_RETURN
 } from "../constants/actionTypes";
-
-import { MAX_TIME_RENTAL_REDUX } from "../constants/application";
 
 const INITIAL_STATE = {
   memberConnected: null,
@@ -45,26 +44,25 @@ export const members = (state = INITIAL_STATE, action) => {
         member => member.email === state.memberConnected
       );
       member.rentalInfo = {
-        stationId: action.stationId,
-        rentalTime: new Date()
+        stationId: action.stationId
       };
       return newStateRent;
+
+    case LATE_RETURN:
+      const newStateLate = { ...state };
+      const memberLate = newStateLate.members.find(
+        member => member.email === state.memberConnected
+      );
+      memberLate.banned = true;
+      memberLate.rentalInfo = null;
+      return newStateLate;
 
     case RETURN_BIKE:
       const newStateReturn = { ...state };
       const memberReturning = newStateReturn.members.find(
         member => member.email === state.memberConnected
       );
-      const now = new Date();
-      var timeDiff = Math.abs(
-        now.getTime() - memberReturning.rentalInfo.rentalTime.getTime()
-      );
-      var diffSeconds = Math.ceil(timeDiff / 1000);
-      if (diffSeconds > MAX_TIME_RENTAL_REDUX) {
-        memberReturning.banned = true;
-      }
       memberReturning.rentalInfo = null;
-
       return newStateReturn;
 
       const newBorrowersList = [...state.bikeBorrowers];
@@ -84,4 +82,8 @@ export const isConnectedMemberAlreadyBorrower = state =>
 export const isMemberABorrower = (state, email) => {
   const memberInfo = state.members.find(member => member.email === email);
   return memberInfo && memberInfo.rentalInfo;
+};
+
+export const getConnectedMemberInfo = state => {
+  return state.members.find(member => member.email === state.memberConnected);
 };

@@ -1,4 +1,4 @@
-import { RENT_BIKE, RETURN_BIKE } from "../constants/actionTypes";
+import { RENT_BIKE, RETURN_BIKE, LATE_RETURN } from "../constants/actionTypes";
 
 export const rentBike = stationId => {
   return {
@@ -11,5 +11,12 @@ export const returnBike = stationId => {
   return {
     type: RETURN_BIKE,
     stationId
+  };
+};
+
+export const lateReturn = member => {
+  return {
+    type: LATE_RETURN,
+    member
   };
 };

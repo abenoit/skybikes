@@ -1,14 +1,16 @@
 export default class Station {
-  constructor() {}
+  constructor(station) {
+    this.station = station;
+  }
 
-  checkStationForReturningBike(selectedStation) {
-    if (selectedStation.nbFreeSlot === 0) {
+  checkStationForReturningBike() {
+    if (this.station.nbFreeSlot === 0) {
       throw new Error("No free slot here !");
     }
   }
 
-  checkStationForRentingBike(selectedStation) {
-    if (selectedStation.bikesAvailable === 0) {
+  checkStationForRentingBike() {
+    if (this.station.bikesAvailable === 0) {
       throw new Error("No bicycle available here !");
     }
   }

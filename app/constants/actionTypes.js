@@ -3,3 +3,4 @@ export const LOGOUT = "LOGOUT";
 export const SIGN_UP = "SIGN_UP";
 export const RENT_BIKE = "RENT_BIKE";
 export const RETURN_BIKE = "RETURN_BIKE";
+export const LATE_RETURN = "LATE_RETURN";

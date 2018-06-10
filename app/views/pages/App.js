@@ -5,8 +5,13 @@ import memberTemplate from "../partials/Member.mustache";
 import sysAdminTemplate from "../partials/SysAdmin.mustache";
 import memberRentalTemplate from "../partials/memberRental.mustache";
 import memberBikeRentedTemplate from "../partials/memberBikeRented.mustache";
+import memberBannedTemplate from "../partials/memberBanned.mustache";
 // Actions
-import { rentBike, returnBike } from "../../actions/stations.actions";
+import {
+  rentBike,
+  returnBike,
+  lateReturn
+} from "../../actions/stations.actions";
 import { login, logout, signup } from "../../actions/members.actions";
 // Models
 import Customer from "../../models/Customer";
@@ -22,8 +27,11 @@ import {
   bindOnSubmit,
   bindOnclickForClass
 } from "../../helpers/dom.helper";
-import { MAX_TIME_RENTAL_FRONT } from "../../constants/application";
-import { isConnectedMemberAlreadyBorrower } from "../../reducers/members.reducer";
+import { MAX_TIME_RENTAL } from "../../constants/application";
+import {
+  isConnectedMemberAlreadyBorrower,
+  getConnectedMemberInfo
+} from "../../reducers/members.reducer";
 
 import "./App.scss";
 
@@ -87,7 +95,7 @@ export default class App {
     }
   }
 
-  startTimer(duration, domElt) {
+  startTimer(duration, domElt, member) {
     let timer = duration;
     let seconds;
     const timerId = setInterval(() => {
@@ -95,6 +103,8 @@ export default class App {
       domElt.innerHTML = `${seconds} seconds remaining to return the bike`;
 
       if (--timer < 0) {
+        this.store.dispatch(lateReturn(member));
+        this.render(memberBannedTemplate);
         clearInterval(timerId);
       }
     }, 1000);
@@ -115,6 +125,12 @@ export default class App {
 
   displayAppropriateScreenOnceLogged() {
     const stations = getAllStations(this.store.getState().stations);
+    const member = this.store.getState().members.memberConnected;
+
+    if (getConnectedMemberInfo(this.store.getState().members).banned) {
+      this.render(memberBannedTemplate);
+      return;
+    }
 
     const template = isConnectedMemberAlreadyBorrower(
       this.store.getState().members
@@ -123,7 +139,7 @@ export default class App {
       : memberRentalTemplate;
 
     this.render(template, {
-      email: this.store.getState().members.memberConnected,
+      email: member,
       stations
     });
   }
@@ -140,7 +156,7 @@ export default class App {
         this.store.getState().stations,
         stationId
       );
-      new Station().checkStationForRentingBike(selectedStation);
+      new Station(selectedStation).checkStationForRentingBike();
       this.store.dispatch(rentBike(stationId));
 
       const stations = getAllStations(this.store.getState().stations);
@@ -150,8 +166,9 @@ export default class App {
       });
 
       this.startTimer(
-        MAX_TIME_RENTAL_FRONT,
-        document.querySelector("#timer-countdown")
+        MAX_TIME_RENTAL - 1,
+        document.querySelector("#timer-countdown"),
+        this.store.getState().members.memberConnected
       );
     } catch (e) {
       alert(e);
@@ -166,7 +183,7 @@ export default class App {
         this.store.getState().stations,
         stationId
       );
-      new Station().checkStationForReturningBike(selectedStation);
+      new Station(selectedStation).checkStationForReturningBike();
     } catch (e) {
       alert(e);
     }
