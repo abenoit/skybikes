@@ -40,7 +40,6 @@
       "\\MemberRental.(mustache)$": "<rootDir>/app/__mocks__/MemberRental.mock.js",
       "\\SysAdmin.(mustache)$": "<rootDir>/app/__mocks__/SysAdmin.mock.js",
       "\\App.(mustache)$": "<rootDir>/app/__mocks__/App.mock.js",
-      "\\.(mustache)$": "<rootDir>/app/__mocks__/App.mock.js",
       "\\.(css|scss)$": "<rootDir>/app/__mocks__/scss.js"
     }
   }

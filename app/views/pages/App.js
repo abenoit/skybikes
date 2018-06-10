@@ -3,9 +3,9 @@ import appTemplate from "./App.mustache";
 import customerTemplate from "../partials/Customer.mustache";
 import loginTemplate from "../partials/Login.mustache";
 import sysAdminTemplate from "../partials/SysAdmin.mustache";
-import memberRentalTemplate from "../partials/memberRental.mustache";
-import memberBikeRentedTemplate from "../partials/memberBikeRented.mustache";
-import memberBannedTemplate from "../partials/memberBanned.mustache";
+import memberRentalTemplate from "../partials/MemberRental.mustache";
+import memberBikeRentedTemplate from "../partials/MemberBikeRented.mustache";
+import memberBannedTemplate from "../partials/MemberBanned.mustache";
 // Actions
 import {
   rentBike,
@@ -183,7 +183,7 @@ export default class App {
       });
 
       this.startTimer(
-        MAX_TIME_RENTAL - 1,
+        MAX_TIME_RENTAL,
         document.querySelector("#timer-countdown"),
         connectedMember
       );
