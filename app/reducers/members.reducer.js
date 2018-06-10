@@ -1,89 +1,84 @@
+import { combineReducers } from "redux";
 import {
-  LOGIN_SUCCESS,
   RENT_BIKE,
   RETURN_BIKE,
   SIGN_UP,
-  LOGOUT,
   LATE_RETURN
 } from "../constants/actionTypes";
 
 const INITIAL_STATE = {
-  memberConnected: null,
-  members: [
-    {
+  byId: {
+    "amelie.benoit33@gmail.com": {
       email: "amelie.benoit33@gmail.com",
       lastname: "BENOIT",
       firstname: "amelie",
       phone: "32332423"
     }
-  ]
+  },
+  allIds: ["amelie.benoit33@gmail.com"]
 };
 
-export const members = (state = INITIAL_STATE, action) => {
+const byId = (state = INITIAL_STATE.byId, action) => {
   switch (action.type) {
-    case LOGIN_SUCCESS:
-      state.members;
-      return { ...state, memberConnected: action.email };
-
-    case LOGOUT:
-      state.members;
-      return { ...state, memberConnected: null };
-
     case SIGN_UP:
       const { firstname, lastname, email, phone } = action;
-      const addNewMember = [...state.members];
-      addNewMember.push({ firstname, lastname, email, phone });
       return {
         ...state,
-        members: addNewMember
+        [email]: {
+          email,
+          lastname,
+          firstname,
+          phone
+        }
       };
 
     case RENT_BIKE:
       const newStateRent = { ...state };
-      const member = newStateRent.members.find(
-        member => member.email === state.memberConnected
-      );
-      member.rentalInfo = {
+      newStateRent[action.email].rentalInfo = {
         stationId: action.stationId
       };
       return newStateRent;
 
     case LATE_RETURN:
       const newStateLate = { ...state };
-      const memberLate = newStateLate.members.find(
-        member => member.email === state.memberConnected
-      );
-      memberLate.banned = true;
-      memberLate.rentalInfo = null;
+      if (newStateLate[action.member].rentalInfo) {
+        newStateLate[action.member].banned = true;
+        newStateLate[action.member].rentalInfo = null;
+      }
       return newStateLate;
 
     case RETURN_BIKE:
       const newStateReturn = { ...state };
-      const memberReturning = newStateReturn.members.find(
-        member => member.email === state.memberConnected
-      );
-      memberReturning.rentalInfo = null;
+      newStateReturn[action.email].rentalInfo = null;
       return newStateReturn;
-
-      const newBorrowersList = [...state.bikeBorrowers];
-      newBorrowersList.filter(
-        borrower => borrower.email !== state.memberConnected
-      );
-      return { ...state, bikeBorrowers: newBorrowersList };
 
     default:
       return state;
   }
 };
 
-export const isConnectedMemberAlreadyBorrower = state =>
-  isMemberABorrower(state, state.memberConnected);
+const allIds = (state = INITIAL_STATE.allIds, action) => {
+  switch (action.type) {
+    case SIGN_UP:
+      return [...state, action.email];
+
+    default:
+      return state;
+  }
+};
+
+export const members = combineReducers({
+  byId,
+  allIds
+});
+
+export const getAllMembers = state => state.allIds.map(id => state.byId[id]);
 
 export const isMemberABorrower = (state, email) => {
-  const memberInfo = state.members.find(member => member.email === email);
+  const memberInfo = state.byId[email];
   return memberInfo && memberInfo.rentalInfo;
 };
 
-export const getConnectedMemberInfo = state => {
-  return state.members.find(member => member.email === state.memberConnected);
+export const getMemberInfo = (state, email) => {
+  return state.byId[email];
 };

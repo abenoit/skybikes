@@ -1,16 +1,18 @@
 import { RENT_BIKE, RETURN_BIKE, LATE_RETURN } from "../constants/actionTypes";
 
-export const rentBike = stationId => {
+export const rentBike = (stationId, email) => {
   return {
     type: RENT_BIKE,
-    stationId
+    stationId,
+    email
   };
 };
 
-export const returnBike = stationId => {
+export const returnBike = (stationId, email) => {
   return {
     type: RETURN_BIKE,
-    stationId
+    stationId,
+    email
   };
 };
 

@@ -21,6 +21,11 @@ import {
   getAllStations,
   getStationById
 } from "../../reducers/stations.reducer";
+import {
+  isMemberABorrower,
+  getMemberInfo,
+  getAllMembers
+} from "../../reducers/members.reducer";
 // Helpers
 import {
   bindOnclick,
@@ -28,17 +33,12 @@ import {
   bindOnclickForClass
 } from "../../helpers/dom.helper";
 import { MAX_TIME_RENTAL } from "../../constants/application";
-import {
-  isConnectedMemberAlreadyBorrower,
-  getConnectedMemberInfo
-} from "../../reducers/members.reducer";
 
 import "./App.scss";
 
 export default class App {
   constructor(store) {
     this.store = store;
-
     this.app = document.createElement("div");
     this.app.className = "App";
     document.body.appendChild(this.app);
@@ -58,8 +58,7 @@ export default class App {
   }
 
   memberView() {
-    const connectedUser = this.store.getState().members.memberConnected;
-    if (connectedUser) {
+    if (this.store.getState().auth.connectedMember) {
       this.displayAppropriateScreenOnceLogged();
     } else {
       this.render(memberTemplate);
@@ -70,25 +69,26 @@ export default class App {
     const { stations, members } = this.store.getState();
     this.render(sysAdminTemplate, {
       stations: getAllStations(stations),
-      members: members.members
+      members: getAllMembers(members)
     });
   }
 
   registerCustomer() {
     const registrationForm = document.querySelector("#registrationForm");
     const { fname, lname, email, phone } = registrationForm;
-    let newMember;
 
     try {
-      newMember = new Customer(email.value).checkCustomerInformation(
+      new Customer(email.value).checkCustomerInformation(
         fname.value,
         lname.value,
         phone.value,
-        this.store.getState().members.members
+        getAllMembers(this.store.getState().members)
       );
       this.store.dispatch(
         signup(fname.value, lname.value, email.value, phone.value)
       );
+
+      alert("Account created !");
       registrationForm.reset();
     } catch (error) {
       alert(error);
@@ -96,27 +96,36 @@ export default class App {
   }
 
   startTimer(duration, domElt, member) {
-    let timer = duration;
-    let seconds;
-    const timerId = setInterval(() => {
-      seconds = parseInt(timer % 60, 10);
-      domElt.innerHTML = `${seconds} seconds remaining to return the bike`;
+    var startTime = Date.now();
+    const context = this;
 
-      if (--timer < 0) {
+    const timerId = setInterval(() => {
+      var elapsedTime = Date.now() - startTime;
+      const remainingTime = MAX_TIME_RENTAL - elapsedTime;
+      domElt.innerHTML = `${remainingTime} ms remaining to return the bike`;
+
+      if (elapsedTime > MAX_TIME_RENTAL) {
         this.store.dispatch(lateReturn(member));
-        this.render(memberBannedTemplate);
         clearInterval(timerId);
+        if (
+          getMemberInfo(
+            this.store.getState().members,
+            this.store.getState().auth.connectedMember
+          ).banned
+        ) {
+          this.render(memberBannedTemplate);
+        }
       }
-    }, 1000);
+    }, 1);
   }
 
   memberLogin() {
     try {
-      const email = document.querySelector("#email");
-      new Customer(email.value).checkLogin(
-        this.store.getState().members.members
+      const email = document.querySelector("#email").value;
+      new Customer(email).checkLogin(
+        getAllMembers(this.store.getState().members)
       );
-      this.store.dispatch(login(email.value));
+      this.store.dispatch(login(email));
       this.displayAppropriateScreenOnceLogged();
     } catch (error) {
       alert(error);
@@ -125,21 +134,22 @@ export default class App {
 
   displayAppropriateScreenOnceLogged() {
     const stations = getAllStations(this.store.getState().stations);
-    const member = this.store.getState().members.memberConnected;
+    const connectedMember = this.store.getState().auth.connectedMember;
 
-    if (getConnectedMemberInfo(this.store.getState().members).banned) {
+    if (getMemberInfo(this.store.getState().members, connectedMember).banned) {
       this.render(memberBannedTemplate);
       return;
     }
 
-    const template = isConnectedMemberAlreadyBorrower(
-      this.store.getState().members
+    const template = isMemberABorrower(
+      this.store.getState().members,
+      connectedMember
     )
       ? memberBikeRentedTemplate
       : memberRentalTemplate;
 
     this.render(template, {
-      email: member,
+      email: connectedMember,
       stations
     });
   }
@@ -152,23 +162,23 @@ export default class App {
   rentBike(evt) {
     try {
       const stationId = evt.target.getAttribute("data-id");
-      const selectedStation = getStationById(
-        this.store.getState().stations,
-        stationId
-      );
-      new Station(selectedStation).checkStationForRentingBike();
-      this.store.dispatch(rentBike(stationId));
+      const stationsStore = this.store.getState().stations;
+      const connectedMember = this.store.getState().auth.connectedMember;
+      const selectedStation = getStationById(stationsStore, stationId);
 
-      const stations = getAllStations(this.store.getState().stations);
+      new Station(selectedStation).checkStationForRentingBike();
+      this.store.dispatch(rentBike(stationId, connectedMember));
+
+      const stations = getAllStations(stationsStore);
       this.render(memberBikeRentedTemplate, {
-        email: this.store.getState().members.memberConnected,
+        email: connectedMember,
         stations
       });
 
       this.startTimer(
         MAX_TIME_RENTAL - 1,
         document.querySelector("#timer-countdown"),
-        this.store.getState().members.memberConnected
+        connectedMember
       );
     } catch (e) {
       alert(e);
@@ -177,24 +187,22 @@ export default class App {
 
   returnBike(evt) {
     const stationId = evt.target.getAttribute("data-id");
+    const stationsStore = this.store.getState().stations;
+    const connectedMember = this.store.getState().auth.connectedMember;
 
     try {
-      const selectedStation = getStationById(
-        this.store.getState().stations,
-        stationId
-      );
+      const selectedStation = getStationById(stationsStore, stationId);
       new Station(selectedStation).checkStationForReturningBike();
+      this.store.dispatch(returnBike(stationId, connectedMember));
+
+      const stations = getAllStations(stationsStore);
+      this.render(memberRentalTemplate, {
+        email: connectedMember,
+        stations
+      });
     } catch (e) {
       alert(e);
     }
-
-    this.store.dispatch(returnBike(stationId));
-
-    const stations = getAllStations(this.store.getState().stations);
-    this.render(memberRentalTemplate, {
-      email: this.store.getState().members.memberConnected,
-      stations
-    });
   }
 
   render(view = customerTemplate, data = {}) {
