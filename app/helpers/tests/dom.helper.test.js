@@ -30,16 +30,4 @@ describe("DomHelper", () => {
       expect(cb).toHaveBeenCalled();
     });
   });
-
-  describe("bindOnSubmit", () => {
-    // it("should add eventlistener on submit event", () => {
-    //   const cb = jest.fn();
-    //   const domElt = document.createElement("form");
-    //   domElt.setAttribute("id", "test");
-    //   document.body.appendChild(domElt);
-    //   bindOnSubmit("#test", cb);
-    //   domElt.submit();
-    //   expect(cb).toHaveBeenCalled();
-    // });
-  });
 });
