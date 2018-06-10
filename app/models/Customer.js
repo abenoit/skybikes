@@ -6,10 +6,14 @@ import {
 export default class Customer {
   constructor(email) {
     this.email = email;
+
+    if (!this.email) {
+      throw new Error("Email is required");
+    }
   }
 
   checkCustomerInformation(firstname, lastname, phone, savedMembers) {
-    if (!firstname || !lastname || !this.email || !phone) {
+    if (!firstname || !lastname || !phone) {
       throw new Error("All fields are required.");
     }
 

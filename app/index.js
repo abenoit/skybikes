@@ -1,5 +1,5 @@
 import App from "./views/pages/App";
-import { createStore, combineReducers } from "redux";
+import { createStore } from "redux";
 import { reducers } from "./reducers";
 
 const store = createStore(

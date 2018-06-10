@@ -1,6 +1,10 @@
 export default class Station {
   constructor(station) {
     this.station = station;
+
+    if (!this.station) {
+      throw new Error("station is required");
+    }
   }
 
   checkStationForReturningBike() {

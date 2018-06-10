@@ -1,0 +1,24 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Stations Actions lateReturn 1`] = `
+Object {
+  "member": "test@test.com",
+  "type": "LATE_RETURN",
+}
+`;
+
+exports[`Stations Actions rentBike 1`] = `
+Object {
+  "email": undefined,
+  "stationId": "1",
+  "type": "RENT_BIKE",
+}
+`;
+
+exports[`Stations Actions returnBike 1`] = `
+Object {
+  "email": undefined,
+  "stationId": "1",
+  "type": "RETURN_BIKE",
+}
+`;

@@ -1,6 +1,6 @@
 import { LOGIN_SUCCESS, LOGOUT } from "../constants/actionTypes";
 
-const INITIAL_STATE = {
+export const INITIAL_STATE = {
   connectedMember: null
 };
 

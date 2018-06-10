@@ -1,0 +1,26 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Members Actions login 1`] = `
+Object {
+  "email": Object {
+    "email": "test@test.com",
+  },
+  "type": "LOGIN_SUCCESS",
+}
+`;
+
+exports[`Members Actions logout 1`] = `
+Object {
+  "type": "LOGOUT",
+}
+`;
+
+exports[`Members Actions signup 1`] = `
+Object {
+  "email": "rainbow@dash.com",
+  "firstname": "Rainbow",
+  "lastname": "Dash",
+  "phone": "0102030405",
+  "type": "SIGN_UP",
+}
+`;

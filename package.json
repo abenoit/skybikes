@@ -7,7 +7,8 @@
   "license": "MIT",
   "scripts": {
     "start": "webpack-dev-server --open --mode development",
-    "build": "webpack --mode production"
+    "build": "webpack --mode production",
+    "test": "jest --watchAll"
   },
   "devDependencies": {
     "babel-core": "^6.26.3",
@@ -15,6 +16,8 @@
     "babel-plugin-transform-object-rest-spread": "^6.26.0",
     "babel-preset-env": "^1.7.0",
     "css-loader": "^0.28.11",
+    "deep-freeze": "0.0.1",
+    "jest": "^23.1.0",
     "node-sass": "^4.9.0",
     "path": "^0.12.7",
     "sass-loader": "^7.0.3",
@@ -27,5 +30,18 @@
     "mustache": "^2.3.0",
     "mustache-loader": "^1.4.0",
     "redux": "^4.0.0"
+  },
+  "jest": {
+    "moduleNameMapper": {
+      "\\Customer.(mustache)$": "<rootDir>/app/__mocks__/Customer.mock.js",
+      "\\Login.(mustache)$": "<rootDir>/app/__mocks__/Login.mock.js",
+      "\\MemberBanned.(mustache)$": "<rootDir>/app/__mocks__/MemberBanned.mock.js",
+      "\\MemberBikeRented.(mustache)$": "<rootDir>/app/__mocks__/MemberBikeRented.mock.js",
+      "\\MemberRental.(mustache)$": "<rootDir>/app/__mocks__/MemberRental.mock.js",
+      "\\SysAdmin.(mustache)$": "<rootDir>/app/__mocks__/SysAdmin.mock.js",
+      "\\App.(mustache)$": "<rootDir>/app/__mocks__/App.mock.js",
+      "\\.(mustache)$": "<rootDir>/app/__mocks__/App.mock.js",
+      "\\.(css|scss)$": "<rootDir>/app/__mocks__/scss.js"
+    }
   }
 }
