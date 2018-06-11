@@ -1,5 +1,8 @@
 # Sky Bikes
 
+## Demo
+A demo is available here https://abenoit.github.io/skybikes/
+
 ## Ride the project
 
 ```javascript
